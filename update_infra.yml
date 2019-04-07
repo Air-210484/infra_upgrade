@@ -1,0 +1,53 @@
+# Update all servers of our infrastructure
+- hosts: hosts_upgrades
+  remote_user: ltdan
+  become: yes
+  become_method: sudo
+
+  tasks:
+    - name: Ping machines before OPS
+      ping:
+
+    - name: Set timezone to Europe/Paris
+      timezone:
+        name: Europe/Paris
+
+    - name: Update repositories
+      apt:
+        update_cache: yes
+
+    - name: Upgrade distributions
+      apt:
+        name: "*"
+        state: latest
+      register: upgrade_result
+
+    - name: Remove useless packages from distro's cache
+      apt:
+        autoclean: yes
+
+    - name: Remove useless dependencies from distro's packages
+      apt:
+        autoremove: yes
+
+    - name: Reboot servers after server's upgrades
+      reboot:
+
+#    - mail:
+#        subject: "System {{ ansible_hostname }} is UP"
+#      delegate_to: sec@vidange.net
+
+    - name: Ping after reboot
+      ping:
+
+    - name: Message updated packages
+      mattermost:
+        url: 'https://mattermost.vidange.net'
+        api_key: '<key>'
+        text: "{{ ansible_hostname }} ({{ inventory_hostname }}) is Alive !"
+
+#    - name: Message from Galaxy Center!
+#      fail:
+#        msg: "Host unreachable : {{ inventory_hostname }}"
+#      when: "'FAILED' in command_result.stderr"
+#
