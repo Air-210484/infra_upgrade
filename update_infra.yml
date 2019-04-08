@@ -1,7 +1,6 @@
 # Update all servers of our infrastructure
-- hosts: {{ ansible_hostname }}
-#- hosts: hosts_upgrades
-  remote_user: ltdan
+- hosts: hosts_upgrades
+  remote_user: <your_user>
   become: yes
   become_method: sudo
 
@@ -36,7 +35,7 @@
 
 #    - mail:
 #        subject: "System {{ ansible_hostname }} is UP"
-#      delegate_to: sec@vidange.net
+#      delegate_to: <mail_adress>
 
     - name: Ping after reboot
       ping:
@@ -46,8 +45,3 @@
         url: 'https://<your_domain>'
         api_key: '<key>'
         text: "{{ ansible_hostname }} ({{ inventory_hostname }}) is Alive !"
-
-#    - name: Message from Galaxy Center!
-#      fail:
-#        msg: "Host unreachable : {{ inventory_hostname }}"
-#      when: "'FAILED' in command_result.stderr"
