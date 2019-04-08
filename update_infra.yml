@@ -1,5 +1,6 @@
 # Update all servers of our infrastructure
-- hosts: hosts_upgrades
+- hosts: {{ ansible_hostname }}
+#- hosts: hosts_upgrades
   remote_user: ltdan
   become: yes
   become_method: sudo
@@ -42,7 +43,7 @@
 
     - name: Message updated packages
       mattermost:
-        url: 'https://mattermost.vidange.net'
+        url: 'https://<your_domain>'
         api_key: '<key>'
         text: "{{ ansible_hostname }} ({{ inventory_hostname }}) is Alive !"
 
@@ -50,4 +51,3 @@
 #      fail:
 #        msg: "Host unreachable : {{ inventory_hostname }}"
 #      when: "'FAILED' in command_result.stderr"
-#
